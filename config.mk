@@ -1,4 +1,4 @@
-# slstatus version
+# slslstatus version
 VERSION = 0
 
 # customize below to fit your system
