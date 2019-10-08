@@ -4,7 +4,7 @@
 
 
 const char *
-get_alsa_vol(long volume)
+get_alsa_vol(void)
 {
 
 	snd_mixer_t *handle;
@@ -20,46 +20,57 @@ get_alsa_vol(long volume)
 	snd_mixer_selem_id_set_index(sid, min_index);
 	snd_mixer_selem_id_set_name(sid, mixer_name);
 
-	if (snd_mixer_open(&handle, 0) < 0)  // Get handler and open connection
-		return -1;
+	if (snd_mixer_open(&handle, 0) < 0) {  // Get handler and open connection
+		warn("snd_mixer_open failed");
+		return NULL;
+	}
 	if (snd_mixer_attach(handle, card) < 0) {
+		warn("snd_mixer_attach failed");
 		snd_mixer_close(handle);
-		return -2;
+		return NULL;
 	}
 
 	if (snd_mixer_selem_register(handle, NULL, NULL) < 0) {
+		warn("snd_mixer_selem_register failed");
 		snd_mixer_close(handle);
-		return -3;
+		return NULL;
 	}
 	if (snd_mixer_load(handle) < 0) {
+		warn("snd_mixer_load failed");
 		snd_mixer_close(handle);
-		return -4;
+		return NULL;
 	}
 
 
 	elem = snd_mixer_find_selem(handle, sid);
 	if (!elem) {
+		warn("snd_mixer_find_selem failed");
 		snd_mixer_close(handle);
-		return -5;
+		return NULL;
 	}
 
-	/* vars that will store current 'min' and 'max' volume values
+	/*
+	 * vars that will store current 'min' and 'max' volume values
 	 * and current volume percentage (relative to 'min' and 'max')
 	 */
 	long min, max, outvol;
 
 	/* get volume range */
 	snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
-	warn("Volume range <%lf, %lf>", min, max);
 
 	/* get current volume and calculate it's percentage */
 	if (snd_mixer_selem_get_playback_volume(elem, 0, &outvol) < 0) {
+		warn("snd_mixer_selem_get_playback_volume failed");
 		snd_mixer_close(handle);
-		return -6;
+		return NULL;
 	}
-	warn("Current vol %ld", outvol);
 	snd_mixer_close(handle);
 
-	return bprintf("%d", outvol ? 0 : (outvol - min) * 100 / (max - min));
+	/* normalize to [0, 100] */
+	outvol -= min;
+	max -= min;
+	outvol = outvol * 100 / max;
+
+	return bprintf("%ld", outvol);
 }
 
