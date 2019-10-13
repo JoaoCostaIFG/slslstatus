@@ -57,23 +57,25 @@ evsnprintf(char *str, size_t size, const char *fmt, va_list ap)
 	ret = vsnprintf(str, size, fmt, ap);
 
 	if (ret < 0) {
-		warn("vsnprintf:");
+		warn("vsnprintf: Enconding error");
 		return -1;
 	} else if ((size_t)ret >= size) {
 		warn("vsnprintf: Output truncated");
 		return -1;
 	}
 
+	/* if all ok, returns len of printed str */
 	return ret;
 }
 
 int
 esnprintf(char *str, size_t size, const char *fmt, ...)
 {
+	/* va_list is a variable argument list */
 	va_list ap;
 	int ret;
 
-	va_start(ap, fmt);
+	va_start(ap, fmt);  // get variable argument list (needs name of last argument in function stub)
 	ret = evsnprintf(str, size, fmt, ap);
 	va_end(ap);
 

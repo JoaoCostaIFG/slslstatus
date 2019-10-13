@@ -51,11 +51,12 @@ main(int argc, char *argv[])
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
 	size_t i, len;
-	int sflag, ret;
+	int ret;
 	char status[MAXLEN];
 	const char *res;
 
-	sflag = 0;
+	/* if 'sflag' is true, print to stdout */
+	unsigned short int sflag = 0;
 	ARGBEGIN {
 		case 's':
 			sflag = 1;
@@ -68,6 +69,7 @@ main(int argc, char *argv[])
 		usage();
 	}
 
+	/* trap SIGINT and SIGTERM to set the 'done' flag terminating the while loop this way */
 	memset(&act, 0, sizeof(act));
 	act.sa_handler = terminate;
 	sigaction(SIGINT,  &act, NULL);
@@ -95,11 +97,13 @@ main(int argc, char *argv[])
 		}
 
 		if (sflag) {
+			/* print to stdout */
 			puts(status);
 			fflush(stdout);
 			if (ferror(stdout))
 				die("puts:");
 		} else {
+			/* print to WN_NAME */
 			if (XStoreName(dpy, DefaultRootWindow(dpy), status)
                             < 0) {
 				die("XStoreName: Allocation failed");
@@ -113,8 +117,10 @@ main(int argc, char *argv[])
 			}
 			difftimespec(&diff, &current, &start);
 
-			intspec.tv_sec = interval / 1000;
-			intspec.tv_nsec = (interval % 1000) * 1E6;
+			intspec.tv_sec = interval / 1000;  // whole secs
+			intspec.tv_nsec = (interval % 1000) * 1E6;  // nano secs
+
+			/* get the extra time needed to wait to make the total waiting interval */
 			difftimespec(&wait, &intspec, &diff);
 
 			if (wait.tv_sec >= 0) {
@@ -126,6 +132,7 @@ main(int argc, char *argv[])
 		}
 	}
 
+	/* clear WN_NAME on exit */
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
 		if (XCloseDisplay(dpy) < 0) {
