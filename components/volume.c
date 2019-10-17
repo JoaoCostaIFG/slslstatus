@@ -49,6 +49,12 @@ get_alsa_vol(void)
 		return NULL;
 	}
 
+	/* check if muted */
+	int ival;
+	if (snd_mixer_selem_has_playback_switch(elem)) {
+		snd_mixer_selem_get_playback_switch(elem, chn, &ival);
+	}
+
 	/*
 	 * vars that will store current 'min' and 'max' volume values
 	 * and current volume percentage (relative to 'min' and 'max')
