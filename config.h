@@ -32,6 +32,6 @@ static const char unknown_str[] = "n/a";
 static const struct arg args[] = {
 	/* function	format		argument */
 	{ temp,		"%sC ",		"/sys/class/thermal/thermal_zone0/temp"	},
-	{ get_alsa_vol,	"%s%% ",	NULL					},
+	{ get_alsa_vol,	"%s ",	NULL					},
 	{ datetime,	"%s",		"%a %d-%m-%Y %H:%M"			},
 };
