@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/types.h>

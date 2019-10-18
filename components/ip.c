@@ -1,15 +1,7 @@
-/* See LICENSE file for copyright and license details. */
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <string.h>
-#if defined(__OpenBSD__)
-	#include <sys/types.h>
-	#include <sys/socket.h>
-#elif defined(__FreeBSD__)
-	#include <netinet/in.h>
-	#include <sys/socket.h>
-#endif
 
 #include "../util.h"
 

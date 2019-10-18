@@ -50,17 +50,12 @@ get_alsa_vol(void)
 	}
 
 	/* check if muted */
-	int is_muted;
+	int is_unmuted;
 	if (snd_mixer_selem_has_playback_switch(elem)) {
-		if (snd_mixer_selem_get_playback_switch(elem, 0, &is_muted) < 0) {
+		if (snd_mixer_selem_get_playback_switch(elem, 0, &is_unmuted) < 0) {
 			warn("snd_mixer_selem_get_playback_switch failed");
-			is_muted = 0;
+			is_unmuted = 0;
 		}
-	}
-
-	if (is_muted) {
-		/*return bprintf("₵");*/
-		return bprintf("M");
 	}
 
 	/*
@@ -85,6 +80,8 @@ get_alsa_vol(void)
 	max -= min;
 	outvol = outvol * 100 / max;
 
-	return bprintf("%ld%%", outvol);
+	if (is_unmuted)
+		return bprintf("♬-%ld%%", outvol);
+	else
+		return bprintf("%ld%%", outvol);
 }
-
