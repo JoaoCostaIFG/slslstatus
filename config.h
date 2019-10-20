@@ -1,8 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* interval between updates (in ms) */
-//const unsigned int interval = 60000;
-const unsigned int interval = 100;
+const unsigned int interval = 60000;
 
 /* text to show if no value can be retrieved */
 static const char unknown_str[] = "N/A";
@@ -59,8 +58,8 @@ static const char unknown_str[] = "N/A";
 
 static const struct arg args[] = {
 	/* function	format		argument */
-	{ battery_perc,	"%s%% ",	"BAT0"					},
-	{ temp,		"%sC ",		"/sys/class/thermal/thermal_zone0/temp"	},
+	//{ battery_perc,	"%s%% ",	"BAT0"					},
+	{ temp,		"%s℃ ",		"/sys/class/thermal/thermal_zone0/temp"	},
 	{ get_alsa_vol,	"%s ",		NULL					},
-	{ datetime,	"%s",		"%a %d-%m-%Y %H:%M"			},
+	{ datetime,	"%s ♥",		"%a %d-%m-%Y %H:%M"			},
 };

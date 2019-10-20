@@ -42,32 +42,107 @@ difftimespec(struct timespec *res, struct timespec *a, struct timespec *b)
 static void
 usage(void)
 {
-	die("usage: %s [-s]", argv0);
+	die("usage: %s [-su]", argv0);
+}
+
+int
+wait_next_min(void)
+{
+	/* get current real time */
+	struct timespec waittime;
+	clock_gettime(CLOCK_REALTIME, &waittime);
+
+	/* calculate time needed to wait until next minute, rounded up */
+	waittime.tv_sec = 61 - (waittime.tv_sec % 60);
+	waittime.tv_nsec = 0;
+
+	if (nanosleep(&waittime, NULL) < 0)
+		die("nanosleep:");
+
+	return 0;
+}
+
+int
+single_update(unsigned short int sflag)
+{
+	size_t i, len;
+	int ret;
+	char status[MAXLEN];
+	const char *res;
+
+	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
+		die("XOpenDisplay: Failed to open display");
+	}
+
+	status[0] = '\0';
+	for (i = len = 0; i < LEN(args); i++) {
+		if (!(res = args[i].func(args[i].args))) {
+			res = unknown_str;
+		}
+		if ((ret = esnprintf(status + len, sizeof(status) - len,
+				    args[i].fmt, res)) < 0) {
+			break;
+		}
+		len += ret;
+	}
+
+	if (sflag) {
+		/* print to stdout */
+		puts(status);
+		fflush(stdout);
+		if (ferror(stdout))
+			die("puts:");
+	} else {
+		/* print to WN_NAME */
+		if (XStoreName(dpy, DefaultRootWindow(dpy), status)
+		    < 0) {
+			die("XStoreName: Allocation failed");
+		}
+		XFlush(dpy);
+	}
+
+	if (XCloseDisplay(dpy) < 0) {
+		die("XCloseDisplay: Failed to close display");
+	}
+
+	return 0;
 }
 
 int
 main(int argc, char *argv[])
 {
+	/* if 'sflag' is true, print to stdout */
+	/* if 'uflag' is true, just update bar 1 time */
+	unsigned short int sflag = 0;
+	unsigned short int uflag = 0;
+	ARGBEGIN {
+		case 's':
+			sflag = 1;
+			break;
+		case 'u':
+			uflag = 1;
+			break;
+		default:
+			usage();
+	} ARGEND
+	if (argc) {
+		usage();
+	}
+
+	/* update bar 1 time only */
+	single_update(sflag);
+	if (uflag) {
+		return 0;
+	}
+
+	wait_next_min();
+
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
 	size_t i, len;
 	int ret;
 	char status[MAXLEN];
 	const char *res;
-
-	/* if 'sflag' is true, print to stdout */
-	unsigned short int sflag = 0;
-	ARGBEGIN {
-		case 's':
-			sflag = 1;
-			break;
-		default:
-			usage();
-	} ARGEND
-
-	if (argc) {
-		usage();
-	}
 
 	/* trap SIGINT and SIGTERM to set the 'done' flag terminating the while loop this way */
 	memset(&act, 0, sizeof(act));
