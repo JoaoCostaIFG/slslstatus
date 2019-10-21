@@ -7,7 +7,7 @@ const unsigned int interval = 60000;
 static const char unknown_str[] = "N/A";
 
 /* maximum output string length */
-#define MAXLEN 50
+#define MAXLEN 80
 
 /*
  * function		description			argument (example)
@@ -57,9 +57,10 @@ static const char unknown_str[] = "N/A";
  */
 
 static const struct arg args[] = {
-	/* function	format		argument */
-	//{ battery_perc,	"%s%% ",	"BAT0"					},
-	{ temp,		"%s℃ ",		"/sys/class/thermal/thermal_zone0/temp"	},
-	{ get_alsa_vol,	"%s ",		NULL					},
-	{ datetime,	"%s ♥",		"%a %d-%m-%Y %H:%M"			},
+	/* function		format		argument */
+	//{ battery_state,	"%s",		"BAT0"					},
+	//{ battery_perc,		"%s%% ",	"BAT0"					},
+	{ temp,			"%s℃ ",		"/sys/class/thermal/thermal_zone0/temp"	},
+	{ get_alsa_vol,		"%s ",		NULL					},
+	{ datetime,		"%s ♥",		"%a %d-%m-%Y %H:%M"			},
 };
