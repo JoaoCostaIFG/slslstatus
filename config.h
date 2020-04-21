@@ -29,8 +29,8 @@ static const char unknown_str[] = "N/A";
  * ipv6			IPv6 address			interface name (eth0)
  * kernel_release	`uname -r`			NULL
  * keyboard_indicators	caps/num lock indicators        format string (c?n?)
- *							see keyboard_indicators.c
- * keymap		layout (variant) of current     NULL
+ *							see
+ *keyboard_indicators.c keymap		layout (variant) of current     NULL
  *			keymap
  * load_avg		load average			NULL
  * netspeed_rx		receive network speed		interface name (wlan0)
@@ -51,16 +51,18 @@ static const char unknown_str[] = "N/A";
  * uid			UID of current user		NULL
  * uptime		system uptime			NULL
  * username		username of current user        NULL
- * vol_perc		OSS/ALSA volume in percent      mixer file (/dev/mixer)
+ * alsa_vol ALSA volume in percent      NULL
+ * mic_state  ALSA capture device state  NULL
  * wifi_perc		WiFi signal in percent		interface name (wlan0)
  * wifi_essid		WiFi ESSID			interface name (wlan0)
  */
 
 static const struct arg args[] = {
-	/* function		format		argument */
-	//{ battery_state,	"%s",		"BAT0"					},
-	//{ battery_perc,		"%s%% ",	"BAT0"					},
-	{ temp,			"%s℃ ",		"/sys/class/thermal/thermal_zone0/temp"	},
-	{ get_alsa_vol,		"%s ",		NULL					},
-	{ datetime,		"%s ♥",		"%a %d-%m-%Y %H:%M"			},
+    /* function		format		argument */
+    //{ battery_state,	"%s",		"BAT0" },
+    //{ battery_perc, "%s%% ",	"BAT0" },
+    {temp, "%s℃ ", "/sys/class/thermal/thermal_zone0/temp"},
+    {mic_state, "%s", NULL},
+    {alsa_vol, "%s ", NULL},
+    {datetime, "%s ♥", "%a %d-%m-%Y %H:%M"},
 };

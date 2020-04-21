@@ -74,7 +74,8 @@ const char *username(void);
 const char *uid(void);
 
 /* volume */
-const char *get_alsa_vol(void);
+const char *alsa_vol(void);
+const char *mic_state(void);
 
 /* wifi */
 const char *wifi_perc(const char *interface);

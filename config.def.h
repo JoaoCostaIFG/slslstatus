@@ -15,8 +15,7 @@ static const char unknown_str[] = "n/a";
  * battery_perc		battery percentage		battery name (BAT0)
  * battery_state	battery charging state		battery name (BAT0)
  * battery_remaining	battery remaining HH:MM		battery name (BAT0)
- * cpu_perc		cpu usage in percent		NULL
- * cpu_freq		cpu frequency in MHz		NULL
+ * cpu_perc		cpu usage in percent		NULL cpu_freq		cpu frequency in MHz		NULL
  * datetime		date and time			format string (%F %T)
  * disk_free		free disk space in GB		mountpoint path (/)
  * disk_perc		disk usage in percent		mountpoint path (/)
@@ -29,8 +28,8 @@ static const char unknown_str[] = "n/a";
  * ipv6			IPv6 address			interface name (eth0)
  * kernel_release	`uname -r`			NULL
  * keyboard_indicators	caps/num lock indicators        format string (c?n?)
- *							see keyboard_indicators.c
- * keymap		layout (variant) of current     NULL
+ *							see
+ *keyboard_indicators.c keymap		layout (variant) of current     NULL
  *			keymap
  * load_avg		load average			NULL
  * netspeed_rx		receive network speed		interface name (wlan0)
@@ -51,11 +50,13 @@ static const char unknown_str[] = "n/a";
  * uid			UID of current user		NULL
  * uptime		system uptime			NULL
  * username		username of current user        NULL
- * vol_perc		OSS/ALSA volume in percent      mixer file (/dev/mixer)
+ * alsa_vol ALSA volume in percent      NULL
+ * mic_state  ALSA capture device state  NULL
+ *
  * wifi_perc		WiFi signal in percent		interface name (wlan0)
  * wifi_essid		WiFi ESSID			interface name (wlan0)
  */
 static const struct arg args[] = {
-	/* function format	    argument */
-	{ datetime, "%s",	    "%F %T" },
+    /* function format	    argument */
+    {datetime, "%s", "%F %T"},
 };
