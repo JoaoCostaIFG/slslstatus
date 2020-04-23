@@ -38,8 +38,7 @@ alsa_vol(void)
 	snd_mixer_selem_id_set_name(sid, mixer_name);
 
 	snd_mixer_elem_t* elem;
-	elem = snd_mixer_find_selem(handle, sid);
-	if (!elem) {
+	if (!(elem = snd_mixer_find_selem(handle, sid))) {
 		warn("snd_mixer_find_selem failed");
 		snd_mixer_close(handle);
 		return NULL;
@@ -110,6 +109,7 @@ mic_state(void)
 		return NULL;
 	}
 
+	/* sets simple-mixer index and name */
   snd_mixer_selem_id_t *sid;
   snd_mixer_selem_id_alloca(&sid);
   snd_mixer_selem_id_set_index(sid, 0);
@@ -129,6 +129,7 @@ mic_state(void)
 		return NULL;
   }
 
+	snd_mixer_close(handle);
   return mic_state ? bprintf("🎤 ") : bprintf("");
 }
 
